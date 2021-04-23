@@ -1,23 +1,29 @@
-import { API } from './js/api.js'
 import { StoreHooks } from './js/site-hooks.js'
 
-//Hooks
-document.getElementById("login").addEventListener("submit", login);
+
+//Start the Store
+let store = new StoreHooks(null);
+store.getShops();
+
+//Login Event Listener Events
 document.getElementById("createStore").addEventListener("submit", createStore);
 document.getElementById("logout").addEventListener("submit", logout);
+document.getElementById("login").addEventListener("submit", login);
 
+//Store Button Event Listeners
+document.getElementById("createDonut").addEventListener("submit", (e) => { store.createDonut(e) });
+document.getElementById("inventory").addEventListener("submit", (e) => { store.addInventory(e) });
+document.getElementById("pos").addEventListener("submit", (e) => { store.placeOrder(e) });
+document.getElementById("edit").addEventListener("submit", (e) => { store.editDonut(e) });
+document.getElementById("refund").addEventListener("submit", (e) => { store.refund(e) });
 
 //Create the store
 function createStore(e) {
     e.preventDefault();
-
-    let newStore = new StoreHooks(null);
-    newStore.createStore(e, (storeId) => {
-        console.log("Store ID is " + storeId)
-        console.log("better write it down :P")
-        newStore.id = storeId;
-        newStore.updateStore();
-        loadStore(newStore)
+    store.createStore(e, (storeId) => {
+        store.id = storeId;
+        store.updateStore();
+        loadStore(store)
     })
 
 }
@@ -29,40 +35,68 @@ function login(e) {
     const formData = new FormData(e.target);
     let storeId = formData.get('storeId');
 
-    let shop = new StoreHooks(storeId);
-    shop.updateStore();
+    console.log(store)
+    store.loading = true;
+    // store.applicationMessage('loading...')
+    LoadingAnimation();
+    store.getShopId(storeId, (data)=>{
+        if(data){
+        store.loading = false;
+        store.applicationMessage('Store Loaded');
+        store.id = data.id
+        store.updateStore();
+        console.log(store)
+        loadStore()
+        }else{
+            store.loading = false;
+            store.applicationMessage('Shop name does not exist.');
+        }
+    });
+   
 
-    loadStore(shop)
+}
 
+
+function LoadingAnimation() {
+    let timer;
+    let x = 0;
+    function animation() {
+        if (store.loading == false) {
+            clearInterval(timer)
+        } else {
+            let element = x % 3;
+            element = element == 0 ? "Looking for Donut Shop." : element == 1 ? "Looking for Donut Shop.." : element == 2 ? "Looking for Donut Shop..." : null;
+            store.applicationMessage(element);
+            x++
+            timer = setTimeout(animation, 1000);
+        }
+    }
+    animation();
 }
 
 //Logs out of the store
 function logout(e) {
 
     e.preventDefault();
+    store.getShops();
 
     document.getElementById("store").classList.add("hide")
     document.getElementById("store").classList.remove("logged")
-    document.getElementById("login").classList.remove("hide")
-    document.getElementById("createStore").classList.remove("hide")
+    document.getElementById("landing-form").classList.remove("hide")
+    // document.getElementById("createStore").classList.remove("hide")
 
 }
 
 
 //Loads the store
-function loadStore(shop) {
+function loadStore() {
 
     //Hide Login
     document.getElementById("store").classList.remove("hide")
     document.getElementById("store").classList.add("logged")
-    document.getElementById("login").classList.add("hide")
-    document.getElementById("createStore").classList.add("hide")
+    document.getElementById("landing-form").classList.add("hide")
+    // document.getElementById("createStore").classList.add("hide")
 
-    //Display Store
-    document.getElementById("createDonut").addEventListener("submit", (e) => { shop.createDonut(e) });
-    document.getElementById("inventory").addEventListener("submit", (e) => { shop.addInventory(e) });
-    document.getElementById("pos").addEventListener("submit", (e) => { shop.placeOrder(e) });
-    document.getElementById("edit").addEventListener("submit", (e) => { shop.editDonut(e) });
-    document.getElementById("refund").addEventListener("submit", (e) => { shop.refund(e) });
+
 
 }

@@ -2,7 +2,7 @@
 
 }
 .hide{
-    display: none;
+    display: none !important;
 }
 .logged {
     display: flex;
@@ -23,4 +23,24 @@ div #store {
 }
 h1{
     text-align: center;
+}
+#applicationMessage{
+    background-color:lightgray;
+    margin: auto auto;
+    margin-bottom:10px;
+    width: 65%;
+    height:3em;
+}
+
+#landing-form {
+    display: flex;
+    flex-direction: row;
+    align-content: center;
+    justify-content: center;
+}
+
+#landing-form form {
+    display: flex;
+    flex-direction: column;
+    margin: 0 10px;
 }

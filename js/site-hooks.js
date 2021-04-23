@@ -10,6 +10,7 @@ import { POS } from './pos.js'
 export class StoreHooks extends POS {
     constructor(id) {
         super(id);
+        this.shops = [];
     }
 
     //Connects to the sale html form
@@ -83,7 +84,7 @@ export class StoreHooks extends POS {
         let type = formData.get('donut');
         let price = formData.get('price');
         let count = formData.get('inventory');
-        super.editDonut(type, price, count, (data) => {
+        super.editDonut(type, price, (data) => {
             if(data.success){
                 this.updateStore()
             }else{
@@ -107,13 +108,25 @@ export class StoreHooks extends POS {
 
 
 //---------------------Printing and Updating Functions ----------------/
-    
-    //updates the store
+    getShops(){
+        super.getShops((data)=>{
+            data.forEach(shop => {
+                var optionElement = document.createElement("option");
+                optionElement.value = shop;
+                document.getElementById("shopNames").appendChild(optionElement);
+                
+            });
+            this.shops = data;
+        });
+    }
     updateStore(){
-        // let test = super.getShops();
-        // console.log(test)
         super.getDonuts(this.printDonuts);
-        // super.getRevenue(this.printRevenue);
+        super.getRevenue(this.printRevenue);
+    }
+
+    applicationMessage(msg){
+        console.log(msg)
+        document.getElementById("applicationMessage").innerHTML = msg;
     }
     
     //Prints the revenue 

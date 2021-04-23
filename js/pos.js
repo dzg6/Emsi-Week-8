@@ -14,13 +14,15 @@ export class POS extends API {
 
     //UpdateStore is a reoccuring callback that is found on site-hooks.js
     async createDonut(type, price, count, updateStore) {
-        let data = await super.createDonut(type, price);
-        if(data.success){
-            data = await super.addInventory(type, count);
-            updateStore(data);
-        }else{
-            updateStore(data)
-        }
+        console.log(type)
+        console.log(price)
+        // let data = await super.createDonut(type, price);
+        // if(data.success){
+        //     data = await super.addInventory(type, count);
+        //     updateStore(data);
+        // }else{
+        //     updateStore(data)
+        // }
     }
     async createStore(name, updateStore) {
         let data = await super.createStore(name);
@@ -49,6 +51,14 @@ export class POS extends API {
     }
 
     //------- Update Store Functions ----/
+    async getShops(printCallback) {
+        const data = await super.getAllShops();
+        printCallback(data);
+    }
+    async getShopId(name, printCallback) {
+        const data = await super.getShopId(name);
+        printCallback(data);
+    }
 
     async getDonuts(printCallback) {
         const data = await super.getInventory();

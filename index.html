@@ -6,15 +6,22 @@
 
   </head>
   <body>
+    <h1 id="shopName">Donut Shop POS</h1>
+    <div id='applicationMessage'></div>
+<div id="landing-form">
       <form id="login">
-      <input placeholder="Enter Store ID" type="text" name="storeId">
+        <input list="shopNames" type="text" name="storeId" />
+        <datalist id="shopNames">
+        </datalist>
     <button  value="Submit" type="submit">Log into Store</button>
 </form>
 <form id="createStore">
   <input placeholder="Enter Store Name" type="text" name="storeName">
 <button  value="Submit" type="submit">Create New Store</button>
 </form>
-<h1 id="shopName"></h1>
+</div>
+
+
 <div id="store" class="overlay hide">
 
       <div id="post" class="row">

@@ -3,6 +3,7 @@
 export class API {
     constructor(id) {
         this.id = id
+        this.loading = false
     }
 
     //Generic fetch request
@@ -62,11 +63,30 @@ export class API {
     }
 
     /**
+    * Get Shop Id
+    * 
+    * @return {JSON} Javascript object = {name: "Morks Donuts", donuts: [{type, price, count}, {...} ] }
+    */
+         getShopId(name) {
+            let url = 'https://donutshop-api.herokuapp.com/shop-id';
+            let request = {
+                "method": 'POST',
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "body": JSON.stringify({ "name": name })
+            };
+    
+            return this.fetchRequest(url, request)
+        }
+    
+
+    /**
     * Get Shops
     * 
     * @return {JSON} Javascript object = {name: "Morks Donuts", donuts: [{type, price, count}, {...} ] }
     */
-         getShops() {
+         getAllShops() {
             let url = 'https://donutshop-api.herokuapp.com/shops'
             let request = {
                 method: 'GET',
@@ -84,6 +104,7 @@ export class API {
     * @return {JSON} 200 for success
     */
     addInventory(type, count = 0) {
+        
         let url = 'https://donutshop-api.herokuapp.com/add-donuts?id=' + this.id;
         let request = {
             "method": 'POST',
