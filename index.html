@@ -1,0 +1,75 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Morks Donuts API</title>
+    <link rel="stylesheet" type="text/css" href="main.css" media="screen" />
+
+  </head>
+  <body>
+      <form id="login">
+      <input placeholder="Enter Store ID" type="text" name="storeId">
+    <button  value="Submit" type="submit">Log into Store</button>
+</form>
+<form id="createStore">
+  <input placeholder="Enter Store Name" type="text" name="storeName">
+<button  value="Submit" type="submit">Create New Store</button>
+</form>
+<h1 id="shopName"></h1>
+<div id="store" class="overlay hide">
+
+      <div id="post" class="row">
+        <form id="createDonut">
+          <input type="text" placeholder="Donut Name" name="donut" />
+          <input type="number" placeholder="Price" name="price" step="any" />
+          <input type="number" placeholder="inventory" name="inventory" />
+      <button  value="Submit" type="submit">Create Donut</button>
+  </form>
+    <form id="edit">
+      <select id='editDonut' name="donut">
+      </select>
+      <input type="number" placeholder="Price" name="price" step="any" />
+  <button  value="Submit" type="submit">Edit Price</button>
+</form>
+  <form id="inventory">
+    <select id='inventoryDonut' name="donut">
+    </select>
+    <input type="number" placeholder="inventory" name="inventory" />
+<button  value="Submit" type="submit">Update Inventory</button>
+</form>
+  <form id="pos">
+    <select id='posDonut' name="donut">
+    </select>
+    <input type="number" placeholder="inventory" name="inventory" />
+<button  value="Submit" type="submit">Sale</button>
+</form>
+<form id="refund">
+  <select id='refundDonut' name="donut">
+  </select>
+  <input type="number" placeholder="inventory" name="inventory" />
+<button  value="Submit" type="submit">Refund</button>
+</form>
+<table>
+ <tr><td>Sales</td><td id="revenue"></td></tr>
+ <tr><td>Tax</td><td id="salesTax"></td></tr>
+ <tr><td>Total</td><td id="total"></td></tr>
+</table>
+<p id="revenue"></p>
+
+  <form id="logout">
+<button  value="Submit" type="submit">Logout</button>
+</form>
+</div>
+<div id="availableInventory" class="row">
+  <h2>Donut Inventory</h2>
+  <table>
+    <tr><th>Donut</th><th>Count</th><th>Price</th></tr>
+    <tbody id="donutList"></tbody>
+  </table>
+
+</div>
+</div> <!--store-->
+    
+  </body>
+
+  <script type="module" src="./app.js" > </script>
+</html>
