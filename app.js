@@ -13,9 +13,35 @@ document.getElementById("login").addEventListener("submit", login);
 //Store Button Event Listeners
 document.getElementById("createDonut").addEventListener("submit", (e) => { store.createDonut(e) });
 document.getElementById("inventory").addEventListener("submit", (e) => { store.addInventory(e) });
-document.getElementById("pos").addEventListener("submit", (e) => { store.placeOrder(e) });
-document.getElementById("edit").addEventListener("submit", (e) => { store.editDonut(e) });
+document.getElementById("sale").addEventListener("submit", (e) => { store.placeOrder(e) });
+document.getElementById("price").addEventListener("submit", (e) => { store.editDonut(e) });
+document.getElementById("delete").addEventListener("submit", (e) => { store.deleteDonut(e) });
 document.getElementById("refund").addEventListener("submit", (e) => { store.refund(e) });
+document.getElementById("addOrder").addEventListener("click", (e) => { store.updateOrder(e) });
+document.getElementById("removeOrder").addEventListener("click", (e) => { store.updateOrder(e) });
+
+//Navigation
+document.getElementById("createDonut-link").addEventListener("click", (e) => { pageLoad(e.target.name) });
+document.getElementById("editInventory-link").addEventListener("click", (e) => { pageLoad(e.target.name) });
+document.getElementById("editPrice-link").addEventListener("click", (e) => { pageLoad(e.target.name) });
+document.getElementById("deleteDonut-link").addEventListener("click", (e) => { pageLoad(e.target.name) });
+document.getElementById("saleDonut-link").addEventListener("click", (e) => { pageLoad(e.target.name) });
+document.getElementById("refundDonut-link").addEventListener("click", (e) => { pageLoad(e.target.name) });
+
+
+function pageLoad(target){
+    let features = document.querySelectorAll(".feature");
+    for(let i = 0; i < features.length; i++ ){
+        
+        features[i].classList.add("hide")
+
+    }
+    document.getElementById(target).classList.remove("hide")
+}
+
+
+
+
 
 //Create the store
 function createStore(e) {
@@ -34,10 +60,11 @@ function login(e) {
 
     const formData = new FormData(e.target);
     let storeId = formData.get('storeId');
-
-    console.log(store)
     store.loading = true;
     // store.applicationMessage('loading...')
+        if(storeId){
+
+
     LoadingAnimation();
     store.getShopId(storeId, (data)=>{
         if(data){
@@ -52,7 +79,9 @@ function login(e) {
             store.applicationMessage('Shop name does not exist.');
         }
     });
-   
+}else{
+    store.applicationMessage('Please enter a shop name.');
+}
 
 }
 

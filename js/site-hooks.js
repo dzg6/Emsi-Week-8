@@ -13,19 +13,63 @@ export class StoreHooks extends POS {
         this.shops = [];
     }
 
+    updateOrder(e){
+        let action = e.target.value;
+        let donut = document.getElementById('posDonut').value;
+        let count = document.getElementById('posInventory').value;
+        count = Number(count);
+        if(action == 'add' && count < this.donuts[donut].count && count) {
+            this.order[donut] ? this.order[donut] += count : this.order[donut] = 0 + count;
+            this.totalCount += count
+        }else if (action == 'remove' &&  this.order[donut] ){
+            count < this.order[donut] ? this.totalCount -= count: this.totalCount -=  0 + this.order[donut];
+            count < this.order[donut] ? this.order[donut] -= count : delete this.order[donut];
+        }else if( this.donuts[donut].count < count && count){
+            this.applicationMessage('There is not enough inventory for ' + donut)
+        }else{
+            this.applicationMessage('How many ' + donut + "'s did you want?")
+        }
+        this.calculateDozen(donut);
+        this.printOrder();
+
+
+
+    }
+
+    calculateDozen(donut){
+        let cheapestDonut = 0;
+        if(this.totalCount % 12 === 0){
+            this.promo.count += 1;
+            Object.keys(this.order).forEach(donutSingle => {
+                cheapestDonut = cheapestDonut < this.donuts[donutSingle].price ? this.donuts[donutSingle].price : cheapestDonut;
+            });
+            console.log(cheapestDonut)
+            this.promo.total = Number(cheapestDonut *  this.promo.count).toFixed(2);
+        }
+
+        /// You are here. Switch the current mode form cheapest to latest donut ordered using the parameter. 
+        //Then update the print order purchase and refund effect. with PROMO
+
+
+        console.log(this.promo)
+    }
     //Connects to the sale html form
     placeOrder(e){
         e.preventDefault();
-        const formData = new FormData(e.target);
-        let type = formData.get('donut');
-        let count = formData.get('inventory');
-        super.placeOrder(type, count, (data) => {
-            if(data.success){
+        let i = 0;
+        Object.keys(this.order).forEach(donut => {
+        super.placeOrder(donut, this.order[donut], (data) => {
+            i++;
+            console.log(i === Object.keys(this.order).length)
+            if (i === Object.keys(this.order).length) {
                 this.updateStore()
-            }else{
+                this.applicationMessage('Order was successfully placed!')
+            }else if (data.error){
+                this.applicationMessage(data.error)
                 console.error(data.error)
             }
         });
+    });
     }
 
     //Connects to the refund html form
@@ -37,7 +81,9 @@ export class StoreHooks extends POS {
         super.refund(type, count, (data) => {
             if(data.success){
                 this.updateStore()
+                this.applicationMessage('Refund was successfully placed!')
             }else{
+                this.applicationMessage(data.error)
                 console.error(data.error)
             }
         });
@@ -52,7 +98,9 @@ export class StoreHooks extends POS {
         super.addInventory(type, count, (data) => {
             if(data.success){
                 this.updateStore()
+                this.applicationMessage('Inventory was successfully updated!')
             }else{
+                this.applicationMessage(data.error)
                 console.error(data.error)
             }
         });
@@ -70,11 +118,30 @@ export class StoreHooks extends POS {
         super.createDonut(type, price, count, (data) => {
             if(data.success){
                 this.updateStore()
+                this.applicationMessage('Donut was successfully created!')
             }else{
+                this.applicationMessage(data.error)
                 console.error(data.error)
             }
         });
     }
+
+        //Connects to the Create Donut html form
+        deleteDonut(e){
+            e.preventDefault();
+            const formData = new FormData(e.target);
+            let type = formData.get('donut');
+            super.deleteDonut(type, (data) => {
+                if(data.success){
+                    this.updateStore()
+                    this.applicationMessage('Donut was successfully deleted!')
+                }else{
+                    this.applicationMessage(data.error)
+                    console.error(data.error)
+                }
+            });
+        }
+    
 
     
     //Connects to the editDonut html form
@@ -87,7 +154,9 @@ export class StoreHooks extends POS {
         super.editDonut(type, price, (data) => {
             if(data.success){
                 this.updateStore()
+                this.applicationMessage('Price was successfully updated!')
             }else{
+                this.applicationMessage(data.error)
                 console.error(data.error)
             }
         });
@@ -99,8 +168,7 @@ export class StoreHooks extends POS {
     createStore(e, loadStore){
         e.preventDefault();
         const formData = new FormData(e.target);
-        let name = formData.get('storeName');
-        console.log(name)
+        let name = formData.get('storeName');       
         super.createStore(name, (data) => {
             loadStore( data.id)
         });
@@ -125,15 +193,30 @@ export class StoreHooks extends POS {
     }
 
     applicationMessage(msg){
-        console.log(msg)
         document.getElementById("applicationMessage").innerHTML = msg;
     }
     
     //Prints the revenue 
     printRevenue(revenue, tax, total){
-        document.getElementById("revenue").innerHTML = revenue;
-        document.getElementById("salesTax").innerHTML = tax;
-        document.getElementById("total").innerHTML = total;
+        document.getElementById("revenue").innerHTML = ('$' + revenue);
+        document.getElementById("salesTax").innerHTML = ('$' + tax);
+        document.getElementById("total").innerHTML = ('$' + total);
+    }
+
+    //Prints Order
+    printOrder(){
+        let table = ""
+        let total = 0;
+
+        Object.keys(this.order).forEach(donut => {
+            table += "<tr><td> " + donut + " </td><td> " + this.order[donut]
+                    + " </td><td> " + Number(this.donuts[donut].price).toFixed(2) + " </td><td> " + Number(this.donuts[donut].price * this.order[donut]).toFixed(2) +  "</td></tr>";
+            total += (this.donuts[donut].price * this.order[donut]);
+        });
+        let tax = total *.06;
+        table += "<tr class='tax'><td> Tax</td><td> </td><td> </td><td>" +  Number(tax).toFixed(2) + "</td></tr>";
+        table += "<tr class='total'><td> Total</td><td> </td><td> </td><td>" +  Number(total + tax).toFixed(2) + "</td></tr>";
+        document.getElementById("orderList").innerHTML = table;
     }
 
     //Prints all the special donut Options and table
@@ -152,6 +235,7 @@ export class StoreHooks extends POS {
         document.getElementById("editDonut").innerHTML = select;
         document.getElementById("posDonut").innerHTML = select;
         document.getElementById("refundDonut").innerHTML = select;
+        document.getElementById("deleteDonut").innerHTML = select;
         document.getElementById("donutList").innerHTML = table;
     }
 

@@ -7,7 +7,8 @@ async function fetchRequest(url) {
     // console.log(response)
     return response;
   }).catch(err => {
-    // console.log(err);
+
+    
   });
 }
 
@@ -41,7 +42,10 @@ async function forLoop() {
       }
   }
 //   fs.writeFile("shops.json", JSON.stringify(user), err => {
-     
+     132 donut world 
+     34 donut test
+     24 donutss
+     14 donutland
 //     // Checking for errors
 //     if (err) throw err; 
    

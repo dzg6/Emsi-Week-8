@@ -8,10 +8,12 @@ export class API {
 
     //Generic fetch request
     fetchRequest(url, request) {
+        this.loading = true;
         return fetch(url, request)
             .then(response => response.json())
-            .then(data => { return data })
+            .then(data => { this.loading = false; return data })
             .catch(err => {
+                this.loading = false;
                 console.error(err);
             });
     }
@@ -156,6 +158,25 @@ export class API {
 
         return this.fetchRequest(url, request)
     }
+
+    /**
+    * Delete Donut
+    * 
+    * @param {string} type Name of the donut
+    * @return {JSON} 200 for success
+    */
+         deleteDonut(type) {
+            let url = 'https://donutshop-api.herokuapp.com/delete-donut?id=' + this.id;
+            let request = {
+                "method": 'POST',
+                "headers": {
+                    "Content-Type": "application/json"
+                },
+                "body": JSON.stringify({ "type": type})
+            };
+    
+            return this.fetchRequest(url, request)
+        }
 
     /**
     * Edit Donut
