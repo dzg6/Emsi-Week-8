@@ -3,7 +3,7 @@
   <head>
     <title>Morks Donuts API</title>
     <link rel="stylesheet" type="text/css" href="main.css" media="screen" />
-
+    <script type="text/javascript" src="./js/sorting.js" > </script>
   </head>
   <body>
     <h1 id="shopName">Donut Shop POS</h1>
@@ -27,32 +27,32 @@
       <div id="post" class="row">
         <form id="createDonut">
           <input type="text" placeholder="Donut Name" name="donut" />
-          <input type="number" placeholder="Price" name="price" step="any" />
-          <input type="number" placeholder="inventory" name="inventory" />
+          <input type="number" placeholder="Price" name="price" step="any" min="0.01" max="100" />
+          <input type="number" placeholder="inventory" name="inventory" min="0" />
       <button  value="Submit" type="submit">Create Donut</button>
   </form>
     <form id="edit">
       <select id='editDonut' name="donut">
       </select>
-      <input type="number" placeholder="Price" name="price" step="any" />
+      <input type="number" placeholder="Price" name="price" step="any" min=".01" max="100" />
   <button  value="Submit" type="submit">Edit Price</button>
 </form>
   <form id="inventory">
     <select id='inventoryDonut' name="donut">
     </select>
-    <input type="number" placeholder="inventory" name="inventory" />
+    <input type="number" placeholder="inventory" name="inventory" min="0" />
 <button  value="Submit" type="submit">Update Inventory</button>
 </form>
   <form id="pos">
     <select id='posDonut' name="donut">
     </select>
-    <input type="number" placeholder="inventory" name="inventory" />
+    <input type="number" placeholder="inventory" name="inventory" min="0" />
 <button  value="Submit" type="submit">Sale</button>
 </form>
 <form id="refund">
   <select id='refundDonut' name="donut">
   </select>
-  <input type="number" placeholder="inventory" name="inventory" />
+  <input type="number" placeholder="inventory" name="inventory" min="0" />
 <button  value="Submit" type="submit">Refund</button>
 </form>
 <table>
@@ -68,8 +68,8 @@
 </div>
 <div id="availableInventory" class="row">
   <h2>Donut Inventory</h2>
-  <table>
-    <tr><th>Donut</th><th>Count</th><th>Price</th></tr>
+  <table id="menuTable">
+    <tr><th onclick=sortTable()>Donut</th><th onclick=sortTable()>Count</th><th onclick=sortTable()>Price</th></tr>
     <tbody id="donutList"></tbody>
   </table>
 
@@ -79,4 +79,5 @@
   </body>
 
   <script type="module" src="./app.js" > </script>
+
 </html>
