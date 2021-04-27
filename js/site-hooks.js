@@ -14,17 +14,22 @@ export class StoreHooks extends POS {
     }
 
     updateOrder(e){
+
+
         let action = e.target.value;
         let donut = document.getElementById('posDonut').value;
+
         let count = document.getElementById('posInventory').value;
         count = Number(count);
-        if(action == 'add' && count < this.donuts[donut].count && count) {
+        if(action == 'add' && count <= this.donuts[donut].count && count <= (this.donuts[donut].count - (this.order[donut] ? this.order[donut]:0 ))) {
             this.order[donut] ? this.order[donut] += count : this.order[donut] = 0 + count;
             this.totalCount += count
+            this.applicationMessage( count + donut + "'s have been added to the order")
         }else if (action == 'remove' &&  this.order[donut] ){
             count < this.order[donut] ? this.totalCount -= count: this.totalCount -=  0 + this.order[donut];
             count < this.order[donut] ? this.order[donut] -= count : delete this.order[donut];
-        }else if( this.donuts[donut].count < count && count){
+            this.applicationMessage( count + donut + "'s have been removed from the order")
+        }else if( count > (this.donuts[donut].count - (this.order[donut] ? this.order[donut]:0 ))){
             this.applicationMessage('There is not enough inventory for ' + donut)
         }else{
             this.applicationMessage('How many ' + donut + "'s did you want?")
@@ -37,39 +42,67 @@ export class StoreHooks extends POS {
     }
 
     calculateDozen(donut){
-        let cheapestDonut = 0;
-        if(this.totalCount % 12 === 0){
-            this.promo.count += 1;
-            Object.keys(this.order).forEach(donutSingle => {
-                cheapestDonut = cheapestDonut < this.donuts[donutSingle].price ? this.donuts[donutSingle].price : cheapestDonut;
-            });
-            console.log(cheapestDonut)
-            this.promo.total = Number(cheapestDonut *  this.promo.count).toFixed(2);
+
+        //Add pomo
+        if(this.totalCount >= ((this.promo.count + 1) * 12)){
+            this.promo.donuts.push(donut);
         }
 
-        /// You are here. Switch the current mode form cheapest to latest donut ordered using the parameter. 
-        //Then update the print order purchase and refund effect. with PROMO
+        // update promo count
+        this.promo.count = Math.floor(this.totalCount / 12);
 
-
+        //remove promo
+        if(this.promo.donuts.length > this.promo.count){
+            this.promo.donuts.pop();
+        }
+        
+        //update running total
+        this.promo.total = 0;
+        this.promo.donuts.forEach(donutPrice => {
+            this.promo.total += this.donuts[donutPrice].price;
+        });
         console.log(this.promo)
     }
     //Connects to the sale html form
     placeOrder(e){
         e.preventDefault();
         let i = 0;
+        let p = 0;
+        this.revenue += 100;
+        console.log(this.revenue)
         Object.keys(this.order).forEach(donut => {
         super.placeOrder(donut, this.order[donut], (data) => {
             i++;
-            console.log(i === Object.keys(this.order).length)
             if (i === Object.keys(this.order).length) {
+
+                if(this.promo.count > 0){
+                    console.log(this.revenue)
+                                 this.promo.donuts.forEach(donut => {
+
+                        super.refund(donut, 1, (data) => {
+                            p++;
+                            console.log(data)
+                            if( p === this.promo.count){
+                                this.updateStore()
+                                this.applicationMessage('Promotional order was successfully placed!')
+                                this.revenue -= 100;
+                            }
+    
+                    })
+                })
+
+            }else{
                 this.updateStore()
                 this.applicationMessage('Order was successfully placed!')
+                this.revenue -= 100;
+            }
             }else if (data.error){
                 this.applicationMessage(data.error)
                 console.error(data.error)
             }
         });
     });
+
     }
 
     //Connects to the refund html form
@@ -214,6 +247,10 @@ export class StoreHooks extends POS {
             total += (this.donuts[donut].price * this.order[donut]);
         });
         let tax = total *.06;
+        if(this.promo.total > 0){
+        total = total - this.promo.total;
+        table += "<tr class='promo'><td> Promo</td><td> </td><td> </td><td>-" +  Number(this.promo.total).toFixed(2) + "</td></tr>";
+        }
         table += "<tr class='tax'><td> Tax</td><td> </td><td> </td><td>" +  Number(tax).toFixed(2) + "</td></tr>";
         table += "<tr class='total'><td> Total</td><td> </td><td> </td><td>" +  Number(total + tax).toFixed(2) + "</td></tr>";
         document.getElementById("orderList").innerHTML = table;

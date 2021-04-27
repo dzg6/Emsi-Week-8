@@ -13,7 +13,17 @@ export class POS extends API {
         this.donuts = {};
         this.name = "";
         this.order = {};
-        this.promo = {total: 0, count: 0};
+        this.promo = {donuts: [], count: 0, total:0};
+        this.totalCount = 0;
+    }
+
+    clearStore(){
+        this.id=0;
+        this.revenue = 0;
+        this.donuts = {};
+        this.name = "";
+        this.order = {};
+        this.promo = {donuts: [], count: 0, total:0};
         this.totalCount = 0;
     }
 
@@ -57,9 +67,7 @@ export class POS extends API {
     
     }
     async refund(type, count, updateStore) {
-        console.log(this.revenue)
         let refundTotal = count * this.donuts[type].price;
-        console.log(refundTotal)
         if(refundTotal <= this.revenue){
         const data = await super.refund(type,count);
         updateStore(data);
@@ -92,13 +100,14 @@ export class POS extends API {
 
     async  getRevenue(printCallback) {
         const data = await super.getRevenue();
-        //getSalesTax is a local api that runs on nodeJs. You must be locally running node "server.js" for this to work
-        let tax = await super.getSalesTax(data.revenue);
-        let total = Number(data.revenue) + Number(tax.salesTax);
+        let tax = Number(data.revenue * .06);
+        let total = Number(data.revenue) + Number(tax);
         this.revenue = Number(data.revenue);
-        tax = Number(tax.salesTax).toFixed(2)
+        tax = Number(tax).toFixed(2)
 
         printCallback(data.revenue.toFixed(2), tax, total.toFixed(2))
+
     }
+
     
 }

@@ -1,4 +1,3 @@
-// document.getElementsByTagName('th').addEventListener("click", sortTable);
 
 //Uses a bubble sort alogrithm to organize table data
 

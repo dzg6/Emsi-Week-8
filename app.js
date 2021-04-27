@@ -21,12 +21,12 @@ document.getElementById("addOrder").addEventListener("click", (e) => { store.upd
 document.getElementById("removeOrder").addEventListener("click", (e) => { store.updateOrder(e) });
 
 //Navigation
-document.getElementById("createDonut-link").addEventListener("click", (e) => { pageLoad(e.target.name) });
-document.getElementById("editInventory-link").addEventListener("click", (e) => { pageLoad(e.target.name) });
-document.getElementById("editPrice-link").addEventListener("click", (e) => { pageLoad(e.target.name) });
-document.getElementById("deleteDonut-link").addEventListener("click", (e) => { pageLoad(e.target.name) });
-document.getElementById("saleDonut-link").addEventListener("click", (e) => { pageLoad(e.target.name) });
-document.getElementById("refundDonut-link").addEventListener("click", (e) => { pageLoad(e.target.name) });
+document.getElementById("createDonut-link").addEventListener("click", (e) => { pageLoad(e.target) });
+document.getElementById("editInventory-link").addEventListener("click", (e) => { pageLoad(e.target) });
+document.getElementById("editPrice-link").addEventListener("click", (e) => { pageLoad(e.target) });
+document.getElementById("deleteDonut-link").addEventListener("click", (e) => { pageLoad(e.target) });
+document.getElementById("saleDonut-link").addEventListener("click", (e) => { pageLoad(e.target) });
+document.getElementById("refundDonut-link").addEventListener("click", (e) => { pageLoad(e.target) });
 
 
 function pageLoad(target){
@@ -36,7 +36,9 @@ function pageLoad(target){
         features[i].classList.add("hide")
 
     }
-    document.getElementById(target).classList.remove("hide")
+    document.getElementById(target.name).classList.remove("hide")
+    document.getElementById("activeFeature").innerHTML = target.innerHTML;
+    
 }
 
 
@@ -61,7 +63,6 @@ function login(e) {
     const formData = new FormData(e.target);
     let storeId = formData.get('storeId');
     store.loading = true;
-    // store.applicationMessage('loading...')
         if(storeId){
 
 
@@ -72,7 +73,6 @@ function login(e) {
         store.applicationMessage('Store Loaded');
         store.id = data.id
         store.updateStore();
-        console.log(store)
         loadStore()
         }else{
             store.loading = false;
@@ -92,7 +92,9 @@ function LoadingAnimation() {
     function animation() {
         if (store.loading == false) {
             clearInterval(timer)
+            document.getElementById("donutImage").classList.remove("loading")
         } else {
+            document.getElementById("donutImage").classList.add("loading")
             let element = x % 3;
             element = element == 0 ? "Looking for Donut Shop." : element == 1 ? "Looking for Donut Shop.." : element == 2 ? "Looking for Donut Shop..." : null;
             store.applicationMessage(element);
@@ -107,7 +109,9 @@ function LoadingAnimation() {
 function logout(e) {
 
     e.preventDefault();
+    store.clearStore();
     store.getShops();
+
 
     document.getElementById("store").classList.add("hide")
     document.getElementById("store").classList.remove("logged")

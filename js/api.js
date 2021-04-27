@@ -13,7 +13,7 @@ export class API {
             .then(response => response.json())
             .then(data => { this.loading = false; return data })
             .catch(err => {
-                this.loading = false;
+                // this.loading = false;
                 console.error(err);
             });
     }
@@ -70,6 +70,7 @@ export class API {
     * @return {JSON} Javascript object = {name: "Morks Donuts", donuts: [{type, price, count}, {...} ] }
     */
          getShopId(name) {
+             console.log(name)
             let url = 'https://donutshop-api.herokuapp.com/shop-id';
             let request = {
                 "method": 'POST',

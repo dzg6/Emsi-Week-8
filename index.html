@@ -5,8 +5,10 @@
     <link rel="stylesheet" type="text/css" href="main.css" media="screen" />
     <script type="text/javascript" src="./js/sorting.js" > </script>
   </head>
-  <body>
+  <body><div class="row">
     <h1 id="shopName">Donut Shop POS</h1>
+    <img src="./donut.png" id="donutImage" alt="">
+  </div>
     <div id='applicationMessage'></div>
 <div id="landing-form">
       <form id="login">
@@ -25,6 +27,8 @@
 <div id="store" class="overlay hide">
 
   <nav>
+    NAVIGATOR
+    
     <a href="#" id="createDonut-link" name="createDonut">Create A New Donut</a>
     <a href="#" id="editInventory-link" name="inventory" >Add Inventory</a>
     <a href="#" id="editPrice-link" name="price" >Adjust Donut Price</a>
@@ -35,7 +39,8 @@
 
 
 
-      <div id="post" class="row">
+      <div id="post" class="column">
+        <h2 id="activeFeature">Create A New Donut</h2>
         <form id="createDonut" class="feature">
           <input type="text" placeholder="Donut Name" name="donut" minlength="1" maxlength="255" pattern="(.|\s)*\S(.|\s)*" >
           <input type="number" placeholder="Price" name="price" step="any" min="0.01" max="100" />
@@ -51,13 +56,13 @@
   <form id="inventory" class="feature hide">
     <select id='inventoryDonut' name="donut">
     </select>
-    <input type="number" placeholder="inventory" name="inventory" min="0" />
+    <input type="number" placeholder="inventory" name="inventory" min="1" />
 <button  value="Submit" type="submit">Update Inventory</button>
 </form>
   <form id="sale" class="feature hide">
     <select id='posDonut' name="donut">
     </select>
-    <input id="posInventory" type="number" placeholder="inventory" name="inventory" min="0" />
+    <input id="posInventory" type="number" placeholder="inventory" name="inventory" min="1"  />
     <div>
     <button id='addOrder' type="button" name="donut" value="add">add to order</button>
     <button id='removeOrder' type="button" name="donut" value="remove">remove from order</button>
@@ -73,7 +78,7 @@
 <form id="refund" class="feature hide">
   <select id='refundDonut' name="donut">
   </select>
-  <input type="number" placeholder="inventory" name="inventory" min="0" />
+  <input type="number" placeholder="inventory" name="inventory" min="1" />
 <button  value="Submit" type="submit">Refund</button>
 </form>
 <form id="delete" class="feature hide">
@@ -81,24 +86,26 @@
   </select>
 <button  value="Submit" type="submit">Delete</button>
 </form>
-<table>
- <tr><td>Sales</td><td id="revenue"></td></tr>
- <tr><td>Tax</td><td id="salesTax"></td></tr>
- <tr><td>Total</td><td id="total"></td></tr>
-</table>
-<p id="revenue"></p>
-
-  <form id="logout">
-<button  value="Submit" type="submit">Logout</button>
-</form>
 </div>
-<div id="availableInventory" class="row">
+<div id="availableInventory" class="column">
   <h2>Donut Inventory</h2>
   <table id="menuTable">
     <tr><th onclick=sortTable(0) >Donut</th><th onclick=sortTable(1) >Count</th><th onclick=sortTable(2) >Price</th></tr>
     <tbody id="donutList"></tbody>
   </table>
 
+</div>
+<div >
+<table>
+  <tr><td>Sales</td><td id="revenue"></td></tr>
+  <tr><td>Tax</td><td id="salesTax"></td></tr>
+  <tr><td>Total</td><td id="total"></td></tr>
+ </table>
+ <p id="revenue"></p>
+ 
+   <form id="logout">
+ <button  value="Submit" type="submit">Logout</button>
+ </form>
 </div>
 </div> <!--store-->
     
